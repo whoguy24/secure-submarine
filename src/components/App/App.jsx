@@ -25,6 +25,8 @@ import './App.css';
 function App() {
   const dispatch = useDispatch();
 
+  // NOTE
+
   const user = useSelector(store => store.user);
 
   useEffect(() => {
