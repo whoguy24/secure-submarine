@@ -2,12 +2,18 @@ const express = require('express');
 const pool = require('../modules/pool');
 const router = express.Router();
 
-router.get('/', (req, res) => {
+const { rejectUnauthenticated, } = require('../modules/authentication-middleware');
+
+router.get('/', rejectUnauthenticated, (req, res) => {
   // what is the value of req.user????
   console.log('req.user:', req.user);
-
+  const values = [ req.user.clearance_level ]
+  const text = `      
+    SELECT * FROM "secret"
+    WHERE "secrecy_level" <= $1
+  ;`
   pool
-    .query(`SELECT * FROM "secret";`)
+    .query( text, values )
     .then((results) => res.send(results.rows))
     .catch((error) => {
       console.log('Error making SELECT for secrets:', error);
